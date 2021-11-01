@@ -1,0 +1,13 @@
+/var/log/dansguardian/access.log {
+    compress
+    dateext
+    maxage 365
+    rotate 99
+    size=+4096k
+    notifempty
+    missingok
+    create 640 dansguardian dansguardian
+    postrotate
+     /etc/init.d/dansguardian try-restart
+    endscript
+}

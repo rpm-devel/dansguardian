@@ -1,0 +1,38 @@
+Index: src/FOptionContainer.cpp
+===================================================================
+--- src/FOptionContainer.cpp.orig
++++ src/FOptionContainer.cpp
+@@ -304,13 +304,6 @@ bool FOptionContainer::read(const char *
+ 		violationbody="";
+ 
+ 		threshold = findoptionI("threshold");
+-                // TODO: Implement a "findoptionO" and a version of
+-                // reality check which uses off_t, for large file support?
+-                max_upload_size = findoptionI("maxuploadsize");
+-                if (!realitycheck(max_upload_size, -1, 0, "maxuploadsize")) {
+-                        return false;
+-                }               // check its a reasonable value
+-                max_upload_size *= 1024;
+ 
+ 		avadmin = findoptionS("avadmin");
+ 		if (avadmin.length()==0) {
+Index: src/OptionContainer.cpp
+===================================================================
+--- src/OptionContainer.cpp.orig
++++ src/OptionContainer.cpp
+@@ -236,6 +236,15 @@ bool OptionContainer::read(const char *f
+ 		mailer = findoptionS("mailer");
+ #endif
+ 	   
++                // TODO: Implement a "findoptionO" and a version of
++                // reality check which uses off_t, for large file support?
++                max_upload_size = findoptionI("maxuploadsize");
++                if (!realitycheck(max_upload_size, -1, 0, "maxuploadsize")) {
++                        return false;
++                }               // check its a reasonable value
++                if (max_upload_size > 0)
++			max_upload_size *= 1024;
++
+ 		// the dansguardian.conf and pics files get amalgamated into one
+ 		// deque.  They are only seperate files for clarity.
+ 

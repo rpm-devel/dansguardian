@@ -1,0 +1,6 @@
+# For security reasons: define own user and group
+# As this package is currently not intended to be included into openSUSE, 
+# we skip the registration of the user- and group-names there and thus
+# need to skip the rpmlint check here
+addFilter("non-standard-uid");
+addFilter("non-standard-gid");
