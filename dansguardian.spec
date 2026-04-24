@@ -21,9 +21,8 @@
 Name:           dansguardian
 Summary:        Content filtering web proxy
 Version:        2.12.0.3
-Release:        1.1%{?dist}
+Release:        2%{?dist}
 License:        GPL-2.0+
-Group:          Productivity/Networking/Web/Proxy
 Url:            http://www.dansguardian.org/
 Source0:        %{name}-%{version}.tar.bz2
 Source1:        %{name}.init
@@ -48,7 +47,6 @@ Requires:       coreutils
 %if 0%{?suse_version}
 Recommends:     logrotate
 %endif
-BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 #
 # openSUSE specials
 %if 0%{?suse_version}
@@ -155,11 +153,7 @@ getent passwd %{dg_user} >/dev/null || useradd -r -g %{dg_group} -d %{_localstat
 %insserv_cleanup %{name}
 %endif
 
-%clean
-%{__rm} -rf %{buildroot}
-
 %files
-%defattr(-, root, root, 0755)
 %doc AUTHORS ChangeLog COPYING NEWS README UPGRADING
 %doc %{_mandir}/man?/*
 %doc %{_datadir}/doc/%{name}
@@ -177,6 +171,9 @@ getent passwd %{dg_user} >/dev/null || useradd -r -g %{dg_group} -d %{_localstat
 %attr(0755, %{dg_user}, %{dg_group}) %dir %{_localstatedir}/log/%{name}
 
 %changelog
+* Fri Apr 24 2026 CasjaysDev <rpm-devel@casjaysdev.pro> - 2.12.0.3-2
+- Modernize spec for AlmaLinux 10: remove BuildRoot, %%clean, %%defattr, Group tag
+
 * Fri Apr  5 2013 chris@computersalat.de
 - September 2012 - Dansguardian 2.12.0.3 - alpha
   * Fixed memory leaks reported by analysis from coverity
