@@ -15,8 +15,8 @@
 # Please submit bugfixes or comments via http://bugs.opensuse.org/
 #
 
-%define         dg_user  dansguardian
-%define         dg_group vscan
+%global         dg_user  dansguardian
+%global         dg_group vscan
 
 Name:           dansguardian
 Summary:        Content filtering web proxy
@@ -44,7 +44,7 @@ BuildRequires:  pcre-devel
 BuildRequires:  pkgconfig
 BuildRequires:  zlib-devel
 Requires:       coreutils
-%if 0%{?suse_version}
+%if 0%{?rhel} >= 8 || 0%{?fedora}
 Recommends:     logrotate
 %endif
 #
@@ -53,7 +53,7 @@ Recommends:     logrotate
 PreReq:         %insserv_prereq
 PreReq:         pwdutils
 Requires:       http_proxy
-%define         _initddir %{_sysconfdir}/init.d
+%global         _initddir %{_sysconfdir}/init.d
 %if 0%{?suse_version} > 1020
 BuildRequires:  fdupes
 %endif
@@ -171,6 +171,10 @@ getent passwd %{dg_user} >/dev/null || useradd -r -g %{dg_group} -d %{_localstat
 %attr(0755, %{dg_user}, %{dg_group}) %dir %{_localstatedir}/log/%{name}
 
 %changelog
+* Fri May 22 2026 CasjaysDev <rpm-devel@casjaysdev.pro> - 2.12.0.3-2
+- Replace suse_version Recommends guard with EL8+/Fedora guard
+- Convert %define dg_user, dg_group, _initddir to %global
+
 * Fri Apr 24 2026 CasjaysDev <rpm-devel@casjaysdev.pro> - 2.12.0.3-2
 - Modernize spec for AlmaLinux 10: remove BuildRoot, %%clean, %%defattr, Group tag
 
