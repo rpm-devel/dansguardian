@@ -22,8 +22,10 @@ Name:           dansguardian
 Summary:        Content filtering web proxy
 Version:        2.12.0.3
 Release:        2%{?dist}
-License:        GPL-2.0+
-Url:            http://www.dansguardian.org/
+License:        GPL-2.0-or-later
+URL:            http://dansguardian.org/
+ExclusiveArch:  x86_64 aarch64
+# Upstream is abandoned (last release 2012); SourceForge downloads return 404; tarball included in repo
 Source0:        %{name}-%{version}.tar.bz2
 Source1:        %{name}.init
 Source3:        %{name}.logrotate
@@ -43,6 +45,7 @@ BuildRequires:  gmp-devel
 BuildRequires:  pcre-devel
 BuildRequires:  pkgconfig
 BuildRequires:  zlib-devel
+Requires(pre):  shadow-utils
 Requires:       coreutils
 %if 0%{?rhel} >= 8 || 0%{?fedora}
 Recommends:     logrotate
@@ -99,7 +102,7 @@ export CXXFLAGS="%{optflags} -fno-strict-aliasing"
         s|^\tchown|#\tchown|;
         s|/usr/lib|%{_libdir}|g;
         ' Makefile
-%{__make} %{?_smp_mflags}
+%make_build
 
 %install
 %{__install} -d %{buildroot}%{_localstatedir}/cache/%{name}/
@@ -107,7 +110,7 @@ export CXXFLAGS="%{optflags} -fno-strict-aliasing"
 %if 0%{?suse_version}
 %makeinstall
 %else
-make install DESTDIR="%{buildroot}"
+%make_install
 %endif
 
 %if 0%{?suse_version}
@@ -154,7 +157,8 @@ getent passwd %{dg_user} >/dev/null || useradd -r -g %{dg_group} -d %{_localstat
 %endif
 
 %files
-%doc AUTHORS ChangeLog COPYING NEWS README UPGRADING
+%license COPYING
+%doc AUTHORS ChangeLog NEWS README UPGRADING
 %doc %{_mandir}/man?/*
 %doc %{_datadir}/doc/%{name}
 %dir %{_sysconfdir}/%{name}
@@ -171,6 +175,11 @@ getent passwd %{dg_user} >/dev/null || useradd -r -g %{dg_group} -d %{_localstat
 %attr(0755, %{dg_user}, %{dg_group}) %dir %{_localstatedir}/log/%{name}
 
 %changelog
+* Thu Jul 03 2026 CasjaysDev <rpm-devel@casjaysdev.pro> - 2.12.0.3-2
+- Source0: SourceForge URL is dead (404); upstream abandoned (2012); tarball included in repo
+- SPDX: GPL-2.0+ → GPL-2.0-or-later; ExclusiveArch: x86_64 aarch64
+- Requires(pre): shadow-utils; %%make_build; %%make_install; %%license COPYING
+
 * Fri May 22 2026 CasjaysDev <rpm-devel@casjaysdev.pro> - 2.12.0.3-2
 - Replace suse_version Recommends guard with EL8+/Fedora guard
 - Convert %define dg_user, dg_group, _initddir to %global
