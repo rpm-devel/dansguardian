@@ -18,6 +18,14 @@
 %global         dg_user  dansguardian
 %global         dg_group vscan
 
+%if 0%{?suse_version}
+%global         curl_devel_pkg   libcurl-devel
+%global         shadow_pkg       shadow
+%else
+%global         curl_devel_pkg   curl-devel
+%global         shadow_pkg       shadow-utils
+%endif
+
 Name:           dansguardian
 Summary:        Content filtering web proxy
 Version:        2.12.0.3
@@ -39,13 +47,13 @@ Patch3:         dansguardian-clamdsocket.patch
 # http://sourceforge.net/p/dansguardian/patches/12/attachment/dg.maxuploadsize.patch
 # rebased and renamed
 Patch4:         %{name}-maxuploadsize.patch
-BuildRequires:  curl-devel
+BuildRequires:  %{curl_devel_pkg}
 BuildRequires:  gcc-c++
 BuildRequires:  gmp-devel
 BuildRequires:  pcre-devel
 BuildRequires:  pkgconfig
 BuildRequires:  zlib-devel
-Requires(pre):  shadow-utils
+Requires(pre):  %{shadow_pkg}
 Requires:       coreutils
 %if 0%{?rhel} >= 8 || 0%{?fedora}
 Recommends:     logrotate
@@ -175,6 +183,11 @@ getent passwd %{dg_user} >/dev/null || useradd -r -g %{dg_group} -d %{_localstat
 %attr(0755, %{dg_user}, %{dg_group}) %dir %{_localstatedir}/log/%{name}
 
 %changelog
+* Sat Jul 05 2026 CasjaysDev <rpm-devel@casjaysdev.pro> - 2.12.0.3-2
+- Guard curl-devel (RHEL/Fedora) vs libcurl-devel (openSUSE) via %%curl_devel_pkg
+- Guard shadow-utils (RHEL/Fedora) vs shadow (openSUSE) via %%shadow_pkg
+- Verified gcc-c++, gmp-devel, pcre-devel, pkgconfig, zlib-devel identical across distros; no guard needed
+
 * Thu Jul 03 2026 CasjaysDev <rpm-devel@casjaysdev.pro> - 2.12.0.3-2
 - Source0: SourceForge URL is dead (404); upstream abandoned (2012); tarball included in repo
 - SPDX: GPL-2.0+ → GPL-2.0-or-later; ExclusiveArch: x86_64 aarch64
